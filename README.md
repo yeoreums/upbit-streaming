@@ -21,7 +21,8 @@ upbit-streaming/
 │   └── requirements.txt
 ├── assets/
 │   ├── console_screenshot.png
-│   └── producer_output.png
+│   ├── jq_screenshot.png
+│   └── producer_output.jpg
 └── README.md
 ```
 
