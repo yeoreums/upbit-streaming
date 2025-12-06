@@ -17,7 +17,7 @@ services:
     ports:
       - "19092:19092"  # External Kafka
       - "18082:18082"  # External Proxy
-      - "9644:9644"
+
     volumes:
       - redpanda-data:/var/lib/redpanda/data
     networks:
