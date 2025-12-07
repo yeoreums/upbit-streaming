@@ -1,6 +1,6 @@
 # Upbit Streaming with Redpanda
 
-![Python](https://img.shields.io/badge/python-3.8+-blue.svg)
+![Python](https://img.shields.io/badge/python-3.10%2B-blue.svg)
 ![Docker](https://img.shields.io/badge/docker-required-blue.svg)
 ![Redpanda](https://img.shields.io/badge/redpanda-kafka--compatible-red.svg)
 ![Tests](https://github.com/yeoreums/upbit-streaming/actions/workflows/test.yml/badge.svg)
