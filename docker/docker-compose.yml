@@ -1,3 +1,14 @@
+# Upbit Streaming - Redpanda Infrastructure
+# 
+# This docker-compose configuration sets up:
+# - Redpanda: Kafka-compatible streaming platform with dual listeners
+# - Redpanda Console: Web UI for monitoring topics and messages
+#
+# Usage:
+#   docker-compose up -d      # Start services
+#   docker-compose down       # Stop services
+#   docker-compose logs -f    # View logs
+
 version: "3.9"
 
 services:
@@ -8,18 +19,22 @@ services:
       - redpanda start
       - --smp 1
       - --overprovisioned
+      # Dual listener configuration for Docker + Host access
+      # Internal (9092): For container-to-container communication (Console)
+      # External (19092): For host machine access (Python producer in WSL)
       - --kafka-addr internal://0.0.0.0:9092,external://0.0.0.0:19092
       - --advertise-kafka-addr internal://redpanda:9092,external://localhost:19092
+      # Pandaproxy (HTTP REST API) for Console UI
       - --pandaproxy-addr internal://0.0.0.0:8082,external://0.0.0.0:18082
       - --advertise-pandaproxy-addr internal://redpanda:8082,external://localhost:18082
+      # RPC for internal cluster communication
       - --rpc-addr redpanda:33145
       - --advertise-rpc-addr redpanda:33145
     ports:
-      - "19092:19092"  # External Kafka
-      - "18082:18082"  # External Proxy
-
+      - "19092:19092"  # Kafka external (for producer.py)
+      - "18082:18082"  # Pandaproxy external (for Console)
     volumes:
-      - redpanda-data:/var/lib/redpanda/data
+      - redpanda-data:/var/lib/redpanda/data  # Persistent storage
     networks:
       - redpanda-network
 
@@ -27,8 +42,9 @@ services:
     image: redpandadata/console:latest
     container_name: redpanda-console
     ports:
-      - "8080:8080"
+      - "8080:8080"  # Web UI access
     environment:
+      # Use internal Docker hostnames for container communication
       KAFKA_BROKERS: "redpanda:9092"
       KAFKA_RESTHOSTS: "http://redpanda:8082"
     networks:
@@ -37,8 +53,8 @@ services:
       - redpanda
 
 volumes:
-  redpanda-data:
+  redpanda-data:  # Named volume for data persistence
 
 networks:
   redpanda-network:
-    driver: bridge
+    driver: bridge  # Internal Docker network
