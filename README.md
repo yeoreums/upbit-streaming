@@ -2,30 +2,52 @@
 
 ![Python](https://img.shields.io/badge/python-3.8+-blue.svg)
 ![Docker](https://img.shields.io/badge/docker-required-blue.svg)
+![Redpanda](https://img.shields.io/badge/redpanda-kafka--compatible-red.svg)
+![Tests](https://github.com/yeoreums/upbit-streaming/workflows/Tests/badge.svg)
 
 A lightweight real-time streaming pipeline that captures crypto price ticks from Upbit and streams them into Redpanda.
 
-- **Upbit WebSocket API**
-- **Python async producer & consumer**
-- **Redpanda** (Kafka-compatible streaming platform)
-- **Docker** for local Redpanda setup
+**Features:**
+- 🔥 Real-time WebSocket streaming from Upbit
+- 🚀 Kafka-compatible message broker (Redpanda)
+- 🐳 Dockerized infrastructure
+- 🧪 Unit tested with pytest
+- ✅ CI/CD with GitHub Actions
+
+---
+
+## 🛠 Tech Stack
+
+| Component | Technology |
+|-----------|------------|
+| Message Broker | Redpanda (Kafka-compatible) |
+| Producer | Python 3.x (asyncio, websockets, confluent-kafka) |
+| WebSocket API | Upbit Exchange |
+| Monitoring | Redpanda Console |
+| Infrastructure | Docker Compose |
+| Testing | pytest |
+| CI/CD | GitHub Actions |
 
 ---
 
 ## 📂 Project Structure
-
 ```text
 upbit-streaming/
+├── .github/
+│   └── workflows/
+│       └── test.yml          # Automated testing
 ├── docker/
-│   └── docker-compose.yml
+│   └── docker-compose.yml    # Redpanda infrastructure
 ├── producer/
-│   ├── producer.py
-│   ├── consumer.py
-│   └── requirements.txt
+│   ├── producer.py           # WebSocket → Kafka producer
+│   ├── requirements.txt      # Python dependencies
+│   └── tests/
+│       ├── __init__.py
+│       └── test_producer.py  # Unit tests
 ├── assets/
-│   ├── console_screenshot.png
-│   ├── jq_screenshot.png
-│   └── producer_output.jpg
+│   ├── demo.gif
+│   ├── demo.mp4
+│   └── screenshots/
 └── README.md
 ```
 
@@ -44,21 +66,24 @@ upbit-streaming/
 
 ---
 
-## 🚀 How to Run
-### 1. Start Redpanda (Docker)
-Navigate to the docker directory and spin up the container.
+## 🚀 Quick Start
 
+### Prerequisites
+- Docker & Docker Compose
+- Python 3.8+
+- WSL2 (for Windows users)
 
+### 1. Start Redpanda
 ```bash
 cd docker
 docker-compose up -d
 ```
+
+**Services:**
 - **Kafka (external)**: `localhost:19092`
 - **Console UI**: http://localhost:8080
 
 ### 2. Install Dependencies
-Set up the Python environment and install the required packages.
-
 ```Bash
 cd ../producer
 python3 -m venv venv
@@ -67,30 +92,43 @@ pip install -r requirements.txt
 ```
 
 ### 3. Run the Producer
-Start streaming data from the Upbit WebSocket.
-
-```Bash
+```bash
 python producer.py
-Streams real-time ticks for: KRW-BTC, KRW-ETH, KRW-XRP
 ```
 
-### 4. Run the Consumer
-Open a new terminal to consume the messages from Redpanda.
+Streams real-time ticks for: **KRW-BTC, KRW-ETH, KRW-XRP**
 
+
+### 4. Run the Consumer
+**Option A: Web UI**
+- Open http://localhost:8080
+- Navigate to Topics → `upbit-ticks`
+
+**Option B: CLI**
 ```bash
 docker exec -it redpanda rpk topic consume upbit-ticks \
   --brokers redpanda:9092 -f '%v\n' | jq
 ```
----
-## 🛠 Tech Stack
 
-| Component | Technology |
-|-----------|------------|
-| Message Broker | Redpanda (Kafka-compatible) |
-| Producer | Python 3.x (asyncio, websockets) |
-| WebSocket API | Upbit Exchange |
-| Monitoring | Redpanda Console |
-| Infrastructure | Docker Compose |
+---
+
+## 🧪 Running Tests
+```bash
+cd producer
+source venv/bin/activate
+
+# Run all tests
+pytest tests/ -v
+
+# Run with coverage
+pytest tests/ --cov=producer --cov-report=html
+
+# Run linting
+flake8 producer.py tests/ --max-line-length=100
+```
+
+**CI/CD:** Tests run automatically on every push via GitHub Actions.
+
 ---
 
 ## 🏗 Architecture
@@ -113,8 +151,13 @@ graph LR
 ---
 
 ### 📸 Screenshots
+### Redpanda Console
 ![Redpanda Console](assets/console_screenshot.png)
+
+### Producer Output
 ![Producer Output](assets/producer_output.jpg)
+
+### Message Data (jq)
 ![jq Output](assets/jq_output.png)
 
 ---
