@@ -4,6 +4,7 @@
 ![Docker](https://img.shields.io/badge/docker-required-blue.svg)
 ![Redpanda](https://img.shields.io/badge/redpanda-kafka--compatible-red.svg)
 ![Tests](https://github.com/yeoreums/upbit-streaming/actions/workflows/test.yml/badge.svg)
+![Lint](https://github.com/yeoreums/upbit-streaming/actions/workflows/lint.yml/badge.svg)
 
 Real-time streaming pipeline capturing Upbit WebSocket price ticks and delivering them into Redpanda (Kafka-compatible).
 
