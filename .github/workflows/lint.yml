@@ -1,18 +1,31 @@
 name: Lint
 
-on: [push, pull_request]
+on: [push, pull_request]  # Runs automatically on every push or pull request
 
 jobs:
   lint:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest  # Uses a fresh Ubuntu virtual machine provided by GitHub
+
     steps:
+    # Step 1. Check out the repository so the workflow has access to the code
     - uses: actions/checkout@v3
+
+    # Step 2. Install Python so flake8 can run
     - uses: actions/setup-python@v4
       with:
-        python-version: '3.10'
+        python-version: "3.10"
+
+    # Step 3. Install flake8, which is the linter that checks coding style and errors
     - name: Install flake8
       run: pip install flake8
+
+    # Step 4. Run flake8 on the producer directory
+    # This step moves into the producer folder and checks only producer.py
+    # The option max-line-length allows slightly longer lines
+    # The ignore option disables selected rules so the lint process is not too strict
     - name: Lint with flake8
       run: |
         cd producer
-        flake8 producer.py --max-line-length=100 --ignore=E501,W503
+        flake8 producer.py \
+          --max-line-length=100 \
+          --ignore=E501,W503
