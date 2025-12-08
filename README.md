@@ -45,7 +45,8 @@ Real-time streaming pipeline capturing Upbit WebSocket price ticks and deliverin
 upbit-streaming/
 ├── .github/
 │   └── workflows/
-│       └── test.yml          # Automated testing
+│       ├── test.yml          # Automated testing
+│       └── lint.yml          # Code quality checks
 ├── docker/
 │   └── docker-compose.yml    # Redpanda infrastructure
 ├── producer/
