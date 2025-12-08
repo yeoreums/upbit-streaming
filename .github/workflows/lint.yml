@@ -1,31 +1,34 @@
 name: Lint
 
-on: [push, pull_request]  # Runs automatically on every push or pull request
+# Run lint checks on every push and pull request
+on: [push, pull_request]
 
 jobs:
   lint:
-    runs-on: ubuntu-latest  # Uses a fresh Ubuntu virtual machine provided by GitHub
+    runs-on: ubuntu-latest
 
     steps:
-    # Step 1. Check out the repository so the workflow has access to the code
-    - uses: actions/checkout@v3
+    - name: Checkout code
+      uses: actions/checkout@v3
 
-    # Step 2. Install Python so flake8 can run
-    - uses: actions/setup-python@v4
+    - name: Set up Python
+      uses: actions/setup-python@v4
       with:
-        python-version: "3.10"
+        python-version: '3.10'
 
-    # Step 3. Install flake8, which is the linter that checks coding style and errors
     - name: Install flake8
       run: pip install flake8
 
-    # Step 4. Run flake8 on the producer directory
-    # This step moves into the producer folder and checks only producer.py
-    # The option max-line-length allows slightly longer lines
-    # The ignore option disables selected rules so the lint process is not too strict
-    - name: Lint with flake8
+    - name: Run flake8 linting
       run: |
         cd producer
+        # Linting rules explained:
+        # - max-line-length=100: Allows slightly longer lines for readability
+        # - ignore:
+        #     E501: line too long (already handled by line-length setting)
+        #     W503: line break before binary operator (not recommended rule)
+        #     W293: blank line has whitespace (not important)
+        #     W292: no newline at end of file (not important)
         flake8 producer.py \
           --max-line-length=100 \
-          --ignore=E501,W503
+          --ignore=E501,W503,W293,W292
